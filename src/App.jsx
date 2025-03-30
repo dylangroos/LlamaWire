@@ -158,30 +158,40 @@ export default function App() {
   }
 
   return (
-    <div style={{ padding: 20, fontFamily: "sans-serif" }}>
-        <img src="/logo.png" alt="LlamaWrite" style={{ width: 100, height: 100 }} />
-      <h2>LlamaWire {tps > 0 && `(${tps} tokens/sec)`}</h2>
-      <div className="messages-container">
-        {messages.map((m, i) => (
-          <div key={i} className={`message ${m.role}`}>
-            <strong>{m.role}:</strong>
-            {m.role === 'assistant' ? (
-              <ReactMarkdown>{m.content}</ReactMarkdown>
-            ) : (
-              m.content
-            )}
-          </div>
-        ))}
-      </div>
-      <div className="input-area">
-          <input 
-            value={input} 
-            onChange={e => setInput(e.target.value)} 
-            onKeyDown={handleKeyDown}
-            placeholder="Type your message..."
-          />
-          <button onClick={sendMessage}>Send</button>
-      </div>
+    <div className="app-container">
+        {/* Header Section */}
+        <div className="header">
+            <img src="/logo.png" alt="LlamaWire Logo" />
+            <h2>LlamaWire <span className="tps-display">{tps > 0 && `(${tps} tokens/sec)`}</span></h2>
+            <div></div>
+        </div>
+
+        {/* Messages Section */}
+        <div className="messages-container">
+            {messages.map((m, i) => (
+              <div key={i} className={`message ${m.role}`}>
+                  <strong>{m.role}:</strong>
+                  {m.role === 'assistant' ? (
+                      <div className="markdown-content">
+                          <ReactMarkdown>{m.content}</ReactMarkdown>
+                      </div>
+                  ) : (
+                      m.content
+                  )}
+              </div>
+            ))}
+        </div>
+
+        {/* Input Section */}
+        <div className="input-area">
+            <input 
+                value={input} 
+                onChange={e => setInput(e.target.value)} 
+                onKeyDown={handleKeyDown}
+                placeholder="Type your message..."
+            />
+            <button onClick={sendMessage}>Send</button>
+        </div>
     </div>
   )
 }
