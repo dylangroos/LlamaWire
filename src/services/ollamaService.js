@@ -1,3 +1,46 @@
+// Define API paths as constants
+const API_CHAT = '/api/chat';
+const API_TAGS = '/api/tags';
+
+/**
+ * Helper to construct the full API URL.
+ * @param {string} baseUrl 
+ * @param {string} apiPath 
+ * @returns {string} Full API URL
+ */
+const getApiUrl = (baseUrl, apiPath) => {
+    return `${baseUrl.replace(/\/$/, '')}${apiPath}`;
+};
+
+/**
+ * Calls the Ollama /api/tags endpoint to get available models.
+ * 
+ * @param {string} baseUrl - The base URL of the Ollama API.
+ * @returns {Promise<Array<object>>} A promise that resolves to an array of model objects, or an empty array on error.
+ */
+export const getAvailableModels = async (baseUrl) => {
+    const apiUrl = getApiUrl(baseUrl, API_TAGS);
+    try {
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: { "Accept": "application/json" } // Explicitly accept JSON
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.text();
+            console.error(`Error fetching models: ${response.status}`, errorBody);
+            throw new Error(`HTTP error ${response.status}`); // Re-throw or return empty
+        }
+        
+        const data = await response.json();
+        return data.models || []; // Return the models array or empty array if not found
+
+    } catch (error) {
+        console.error("Network or parsing error fetching models:", error);
+        return []; // Return empty array on any error
+    }
+};
+
 /**
  * Calls the Ollama /api/chat endpoint and streams the response.
  * 
@@ -9,7 +52,7 @@
  * @param {function} onError - Callback function called if an error occurs during fetch or streaming.
  */
 export const streamChatCompletion = async (baseUrl, model, messagesPayload, onChunk, onStreamEnd, onError) => {
-    const apiUrl = `${baseUrl.replace(/\/$/, '')}/api/chat`; // Ensure no trailing slash
+    const apiUrl = getApiUrl(baseUrl, API_CHAT);
 
     try {
         const response = await fetch(apiUrl, {
