@@ -79,3 +79,5 @@ If you have Docker installed, you can run LlamaWire directly from the pre-built 
 *   The Ollama model used can be changed in `src/App.jsx` within the `fetch` call (`model: "phi4"`).
 *   The Ollama API endpoint is currently hardcoded to `http://localhost:11434/api/chat` in `src/App.jsx`.
     *   **Docker Note:** When running LlamaWire in Docker, `localhost` refers to the *container itself*, not your host machine. You need to use the appropriate network address for your Ollama instance (e.g., `http://host.docker.internal:11434` for Docker Desktop, or the host's IP address). An upcoming feature will allow configuring this URL in the UI.
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/groos12/llama-wire.svg)](https://hub.docker.com/r/groos12/llama-wire)
