@@ -1,6 +1,6 @@
 # LlamaWire 🦙⚡️ # Under Construction...
 
-<p align="center"><img src="dark-logo.png" alt="LlamaWire Logo" width="500"></p>
+<p align="center"><img src="public/dark-logo.png" alt="LlamaWire Logo" width="500"></p>
 
 A simple web-based chat interface that connects to a locally running Ollama instance and streams responses in real-time. Features a basic tokens-per-second calculation during streaming.
 
