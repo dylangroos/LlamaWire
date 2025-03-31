@@ -4,7 +4,7 @@
 
 <p align="center"><img src="public/dark-logo.png" alt="LlamaWire Logo" width="500"></p>
 
-**LlamaWire is a lightweight web interface primarily designed for benchmarking the performance of Ollama models directly on the hardware where Ollama is running.** Think of it like a diagnostic console for your Ollama server, providing real-time feedback (like Tokens Per Second) to help you understand and optimize hardware efficiency, especially crucial for rented infrastructure. While ideal for running alongside Ollama, it can also serve as a simple chat client connecting to any accessible Ollama instance or cluster.
+**LlamaWire is a lightweight chat client designed for benchmarking the performance of Ollama models directly on the hardware where Ollama is running.** Think of it like a diagnostic console for your Ollama server, providing real-time feedback (like Tokens Per Second) to help you understand and optimize hardware efficiency, especially crucial for rented infrastructure. While ideal for running alongside Ollama, it can also serve as a simple chat client connecting to any accessible Ollama instance or cluster.
 
 ## Core Goal: Hardware Benchmarking & Optimization
 
