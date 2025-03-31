@@ -9,7 +9,6 @@ body {
   h2 {
     text-align: center;
     font-size: 1.8rem;
-    margin-top: 30vh;
     color: white;
   }
   
@@ -18,6 +17,10 @@ body {
     margin: 2rem auto 1rem auto;
     width: 80px;
     height: 80px;
+  }
+
+  .ollama-url-input-container {
+    color: gray
   }
   
   .messages-container {
