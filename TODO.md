@@ -1,74 +1,93 @@
-# LlamaWire: Ollama Benchmarking Client Plan
+# LlamaWire: Ollama Hardware Benchmarking Client
 
 ## Core Client Features
-### 0. Planning
-- [x] Make `TODO.md`
-- [x] Redesign file structure
 
-### 1. Ollama Connection Configuration (Waiting on this)
-- [x] Add UI input field for Ollama server URL (e.g., `http://localhost:11434`)
-- [ ] Store the URL in state and use it for API calls
-- [ ] Add validation for the URL format
-- [ ] Handle connection errors gracefully (display feedback to user)
+### 0. Project Setup & Planning
+- [x] Create initial `TODO.md`
+- [x] Design and implement new file structure
+- [x] Refactor UI into components (`Header`, `ChatMessages`, `MessageInput`)
+- [x] Refactor API calls into `ollamaService.js`
+- [x] Refactor TPS calculation into `useTpsCalculator` hook
+- [x] Setup basic testing with Vitest (`Header`, `MessageInput`)
+- [x] Setup GitHub Actions CI workflow to run tests
+
+### 1. Ollama Connection Configuration
+- [x] Add `OllamaUrlInput.jsx` component
+- [x] Add state in `App.jsx` for URL
+- [x] Use configured URL for API calls in `ollamaService.js`
+- [ ] *Future:* Add validation for the URL format
+- [ ] *Future:* Add better connection error handling/feedback for URL input
 
 ### 2. Model Selection
-- [ ] Fetch available models from the configured Ollama instance (`/api/tags`)
-- [ ] Add a dropdown or selector in the UI to choose the model
-- [ ] Use the selected model in API requests
+- [x] Add `getAvailableModels` function to `ollamaService.js`
+- [x] Add `ModelSelector.jsx` component
+- [x] Add state in `App.jsx` for available/selected models
+- [x] Implement `useEffect` in `App.jsx` to fetch models on URL change
+- [x] Use selected model for `/api/chat` calls
+- [x] Handle loading/error states for model fetching
 
-### 3. Chat Interface
-- [ ] Retain core chat functionality (sending messages, displaying history)
-- [ ] Ensure streaming updates are efficient
-- [ ] Review and optimize message history handling for `/api/chat`
-- [ ] Add UI indicator for when the model is generating
+### 3. Core Chat Interface
+- [x] Retain core chat functionality (sending messages, displaying history)
+- [x] Ensure streaming updates are reasonably efficient (basic implementation done)
+- [ ] Review and potentially optimize message history handling (e.g., performance with very long histories)
+- [ ] Add UI indicator for when the model is actively generating/streaming
 
 ### 4. Benchmarking Metrics & Display
-- [ ] **Tokens Per Second (TPS):**
-    - [ ] Review and potentially refine the current moving average calculation for accuracy
-    - [ ] Display TPS prominently and update in real-time during streaming
+- [x] **Tokens Per Second (TPS):**
+    - [x] Implement moving average calculation (`useTpsCalculator`)
+    - [x] Display TPS in `Header` during streaming
+    - [ ] *Future:* Review and potentially refine the accuracy/method of TPS calculation (e.g., tokenization method, windowing strategy)
 - [ ] **Time To First Token (TTFT):**
-    - [ ] Measure time from sending request to receiving the *first* content chunk
-    - [ ] Display TTFT for each response
+    - [ ] Measure time from sending request to receiving the *first* content chunk in `ollamaService.js` or `App.jsx`
+    - [ ] Add state in `App.jsx` to hold TTFT for the last response
+    - [ ] Display TTFT (e.g., below the chat, in history)
 - [ ] **Total Generation Time:**
-    - [ ] Measure time from sending request to receiving the *final* chunk (`done: true`)
-    - [ ] Display total time for each response
-- [ ] **Overall Latency:**
-    - [ ] Consider measuring full round-trip time (including network)
+    - [ ] Measure time from sending request to `handleStreamEnd` being called
+    - [ ] Add state in `App.jsx` to hold total time for the last response
+    - [ ] Display Total Time
 - [ ] **UI Display:**
-    - [ ] Design a clear section in the UI to display these metrics per response or aggregated.
+    - [ ] Design/implement a dedicated `MetricsDisplay.jsx` component to show TTFT, Total Time, etc., clearly.
+- [x] **History:**
+    - [x] Add `historyUtils.js` to save results (query, model, tps, url, timestamp) to `localStorage`
+    - [x] Call `saveTpsRecord` on stream end
+    - [x] Create `HistoryDisplay.jsx` boilerplate to show history
+    - [ ] Integrate `HistoryDisplay.jsx` into `App.jsx` UI
+    - [ ] Add "Clear History" functionality to `HistoryDisplay.jsx`
 
 ### 5. Error Handling
-- [ ] Improve handling of API errors from Ollama (e.g., model not found, connection issues)
-- [ ] Display clear error messages to the user in the UI
+- [x] Basic error display for chat (`handleError` in `App.jsx`)
+- [x] Basic error state for model fetching (`modelError` in `App.jsx`)
+- [ ] Improve user feedback for different API/network errors (e.g., specific messages for connection refused vs. model not found)
 
 ### 6. Client Performance & Optimization
-- [ ] Ensure React component rendering is optimized (e.g., use `useCallback`, `React.memo` where appropriate)
-- [ ] Minimize frontend processing during generation to avoid impacting benchmarks
-- [ ] Profile the application to identify any bottlenecks
+- [x] Use `useCallback` in hook and relevant places
+- [ ] Review component rendering for optimizations (`React.memo`?)
+- [ ] Minimize frontend processing during generation (ongoing concern)
+- [ ] Profile application if performance issues arise
 
 ### 7. Packaging & Deployment
-- [ ] Review and update `Dockerfile` for easy containerization
-- [ ] Ensure build process is streamlined (`npm run build` or `yarn build`)
-- [ ] Add instructions in `README.md` on how to configure and run the client for benchmarking
+- [x] Create multi-stage `Dockerfile` using Nginx
+- [x] Fix Docker build issues (file copying)
+- [x] Enable multi-platform builds (`buildx`)
+- [x] Add Docker run instructions to `README.md`
+- [x] Link `README.md` to Docker Hub description (manual step on Docker Hub)
 
 ### 8. UI/UX Improvements
-- [ ] Add a button to clear chat history
-- [ ] Improve layout for better readability of chat and metrics
-- [ ] Consider theme options (light/dark based on existing logos?)
+- [x] Add role-based color coding for messages
+- [ ] Add button to clear chat history
+- [ ] Improve overall layout/styling for chat, config, metrics, and history display.
+- [ ] Consider theme options (light/dark)
+- [ ] Add favicon? (Currently default Vite)
 
-## Implementation Order Suggestion
+## High Priority Next Steps
 
-1.  Implement Ollama URL configuration.
-2.  Implement dynamic model selection.
-3.  Refine chat interface and streaming.
-4.  Implement TTFT and Total Generation Time metrics.
-5.  Refine TPS calculation and UI display for all metrics.
-6.  Improve error handling.
-7.  Optimize client performance.
-8.  Update packaging (`Dockerfile`) and documentation (`README.md`).
-9.  Add general UI/UX improvements.
+1.  Integrate `HistoryDisplay.jsx` into `App.jsx` UI.
+2.  Implement TTFT and Total Generation Time metrics.
+3.  Design and implement `MetricsDisplay.jsx` component.
+4.  Refine error handling and user feedback.
+5.  Improve overall styling and layout.
 
 ## Notes
-- Focus on accuracy of benchmark metrics.
-- Keep the client itself lightweight.
-- Use modern React practices (Hooks).
+- Primary focus is **accurate hardware benchmarking** via interaction.
+- Keep the client itself lightweight to avoid skewing results.
+- Continue using modern React practices.
