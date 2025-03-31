@@ -4,7 +4,8 @@ import Header from './components/Layout/Header'
 import ChatMessages from './components/ChatInterface/ChatMessages'
 import MessageInput from './components/ChatInterface/MessageInput'
 import OllamaUrlInput from './components/Config/OllamaUrlInput'
-import { streamChatCompletion } from './services/ollamaService'
+import ModelSelector from './components/Config/ModelSelector'
+import { streamChatCompletion, getAvailableModels } from './services/ollamaService'
 
 // Import the custom hook
 import { useTpsCalculator } from './hooks/useTpsCalculator'
@@ -14,7 +15,6 @@ import { saveTpsRecord } from './utils/historyUtils';
 
 export default function App() {
   const [messages, setMessages] = useState([{ role: "system", content: "Start chatting with Ollama..." }])
-  const [model, setModel] = useState("gemma3")
   const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434')
   const [input, setInput] = useState("")
 
@@ -24,6 +24,44 @@ export default function App() {
   // Ref to store the input used for the current query
   const currentQueryInputRef = useRef("");
 
+  // State for models
+  const [availableModels, setAvailableModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState(""); // Start with no model selected
+  const [isLoadingModels, setIsLoadingModels] = useState(false);
+  const [modelError, setModelError] = useState(null);
+
+  // Effect to fetch models when Ollama URL changes
+  useEffect(() => {
+    if (!ollamaUrl) return; // Don't fetch if URL is empty
+
+    const fetchModels = async () => {
+      setIsLoadingModels(true);
+      setModelError(null);
+      setAvailableModels([]); // Clear previous models
+      setSelectedModel("");   // Reset selected model
+      try {
+        const models = await getAvailableModels(ollamaUrl);
+        setAvailableModels(models);
+        // Optionally, select the first model by default if available
+        if (models.length > 0) {
+          setSelectedModel(models[0].name);
+        } else {
+           setModelError("No models found at this URL.");
+        }
+      } catch (error) {
+        // The service already logs errors, just set the error state
+        setModelError("Failed to fetch models. Check URL and Ollama status.");
+      } finally {
+        setIsLoadingModels(false);
+      }
+    };
+
+    // Debounce fetching slightly to avoid spamming on rapid typing
+    const timeoutId = setTimeout(fetchModels, 500);
+    return () => clearTimeout(timeoutId); // Cleanup timeout on URL change or unmount
+
+  }, [ollamaUrl]); // Re-run effect when ollamaUrl changes
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -32,11 +70,13 @@ export default function App() {
   }
     
   const sendMessage = async () => {
-    const currentInput = input.trim(); // Capture input before clearing
-    if (currentInput === '') return;
+    const currentInput = input.trim();
+    if (currentInput === '' || !selectedModel) { // Also check if a model is selected
+         console.warn("Cannot send message: Empty input or no model selected.");
+         return;
+    }
 
-    currentQueryInputRef.current = currentInput; // Store the input for later saving
-
+    currentQueryInputRef.current = currentInput;
     resetTpsCalculator()
 
     const userMessage = { role: "user", content: currentInput }
@@ -44,7 +84,7 @@ export default function App() {
     const assistantPlaceholder = { role: 'assistant', content: '' }
     
     setMessages([...currentMessages, assistantPlaceholder])
-    setInput("") // Clear input field now
+    setInput("")
 
     const messagesPayload = currentMessages.filter(m => m.role !== "system")
 
@@ -65,16 +105,14 @@ export default function App() {
 
     const handleStreamEnd = () => {
         console.log("Stream ended.")
-        // Save the record to localStorage
-        const finalTps = tps; // Capture the TPS value at the end of the stream
+        const finalTps = tps;
         saveTpsRecord({
-            query: currentQueryInputRef.current, // Use the stored input
-            model: model,
+            query: currentQueryInputRef.current,
+            model: selectedModel, // Use selectedModel state
             tps: finalTps,
-            timestamp: new Date().toISOString(), // Add a timestamp
-            ollamaUrl: ollamaUrl // Optionally store the URL used
+            timestamp: new Date().toISOString(),
+            ollamaUrl: ollamaUrl
         });
-        // Optional: Maybe call resetTpsCalculator() here if you want the display to reset immediately after saving?
     }
 
     const handleError = (error) => {
@@ -88,7 +126,7 @@ export default function App() {
 
     await streamChatCompletion(
         ollamaUrl, 
-        model, 
+        selectedModel, // Use selectedModel state
         messagesPayload, 
         handleChunk, 
         handleStreamEnd, 
@@ -98,20 +136,33 @@ export default function App() {
 
   return (
     <div className="app-container">
-        <div style={{ padding: '10px'}}>
+        {/* Configuration Section */}
+        <div style={{ padding: '10px', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap'}}> 
           <OllamaUrlInput ollamaUrl={ollamaUrl} setOllamaUrl={setOllamaUrl} />
+          <ModelSelector 
+            models={availableModels}
+            selectedModel={selectedModel}
+            setSelectedModel={setSelectedModel}
+            isLoading={isLoadingModels}
+            error={modelError}
+          />
         </div>
-        {/* Pass tps value from the hook to the Header */}
-        <Header tps={tps} model={model} />
-        {/* Use the ChatMessages component, passing messages as a prop */}
+
+        {/* Pass selectedModel to Header if needed, or just tps */}
+        <Header tps={tps} /> 
+
         <ChatMessages messages={messages} />
-        {/* Use the MessageInput component */}
+
         <MessageInput 
             input={input} 
             setInput={setInput} 
             handleKeyDown={handleKeyDown} 
             sendMessage={sendMessage} 
+            disabled={!selectedModel || isLoadingModels} // Disable input if no model or loading
         />
+        
+        {/* Only render history display if needed */}
+        {/* <HistoryDisplay /> */} 
     </div>
   )
 }
