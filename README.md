@@ -4,13 +4,24 @@
 
 <p align="center"><img src="public/dark-logo.png" alt="LlamaWire Logo" width="500"></p>
 
-A lightweight web interface to chat with Ollama models via their API endpoint. Features real-time streaming responses and a basic tokens-per-second calculation.
+**LlamaWire is a lightweight web interface primarily designed for benchmarking the performance of Ollama models directly on the hardware where Ollama is running.** Think of it like a diagnostic console for your Ollama server, providing real-time feedback (like Tokens Per Second) to help you understand and optimize hardware efficiency, especially crucial for rented infrastructure. While ideal for running alongside Ollama, it can also serve as a simple chat client connecting to any accessible Ollama instance or cluster.
+
+## Core Goal: Hardware Benchmarking & Optimization
+
+The main purpose of LlamaWire is to provide a simple tool to:
+*   Measure the inference speed (Tokens Per Second) of different Ollama models in real-time, directly on the host system.
+*   Compare performance across various models or configurations on a specific hardware setup.
+*   Help optimize resource usage, particularly when using rented GPUs or servers, by providing immediate performance feedback.
+*   Log performance history for different queries and models for analysis.
 
 ## Features
 
-*   Chat with Ollama models.
-*   Real-time streaming of responses.
-*   Moving average tokens-per-second display during streaming.
+*   **Real-time TPS:** Displays a moving average of Tokens Per Second (TPS) during model response generation.
+*   **Configurable Ollama Endpoint:** Connect to any accessible Ollama instance (local, remote, Dockerized) via its URL.
+*   **Dynamic Model Selection:** Fetches and allows selection from models available on the target Ollama instance.
+*   **Performance History:** Logs query, model, TPS, timestamp, and Ollama URL to browser `localStorage` for later review.
+*   **Simple Chat Interface:** Basic chat functionality for interacting with the models to generate performance data.
+*   **Easy Docker Deployment:** Run instantly using the multi-platform Docker image.
 
 ## Prerequisites
 
