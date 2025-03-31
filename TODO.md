@@ -2,11 +2,11 @@
 
 ## Core Client Features
 ### 0. Planning
-- [ ] Make `TODO.md`
-- [ ] Redesign file structure
+- [x] Make `TODO.md`
+- [x] Redesign file structure
 
-### 1. Ollama Connection Configuration
-- [ ] Add UI input field for Ollama server URL (e.g., `http://localhost:11434`)
+### 1. Ollama Connection Configuration (Waiting on this)
+- [x] Add UI input field for Ollama server URL (e.g., `http://localhost:11434`)
 - [ ] Store the URL in state and use it for API calls
 - [ ] Add validation for the URL format
 - [ ] Handle connection errors gracefully (display feedback to user)
