@@ -9,6 +9,9 @@ import { streamChatCompletion } from './services/ollamaService'
 // Import the custom hook
 import { useTpsCalculator } from './hooks/useTpsCalculator'
 
+// Import the history utility
+import { saveTpsRecord } from './utils/historyUtils';
+
 export default function App() {
   const [messages, setMessages] = useState([{ role: "system", content: "Start chatting with Ollama..." }])
   const [model, setModel] = useState("gemma3")
@@ -18,6 +21,9 @@ export default function App() {
   // Use the custom hook for TPS calculation
   const { tps, recordChunk, resetCalculator: resetTpsCalculator } = useTpsCalculator()
 
+  // Ref to store the input used for the current query
+  const currentQueryInputRef = useRef("");
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -26,26 +32,24 @@ export default function App() {
   }
     
   const sendMessage = async () => {
-    if (input.trim() === '') return
+    const currentInput = input.trim(); // Capture input before clearing
+    if (currentInput === '') return;
 
-    // Reset TPS calculator using the function from the hook
+    currentQueryInputRef.current = currentInput; // Store the input for later saving
+
     resetTpsCalculator()
 
-    const userMessage = { role: "user", content: input }
+    const userMessage = { role: "user", content: currentInput }
     const currentMessages = [...messages, userMessage]
     const assistantPlaceholder = { role: 'assistant', content: '' }
     
     setMessages([...currentMessages, assistantPlaceholder])
-    setInput("")
+    setInput("") // Clear input field now
 
     const messagesPayload = currentMessages.filter(m => m.role !== "system")
 
-    // Define callbacks for the service
     const handleChunk = ({ content, timestamp, count }) => {
-        // Record chunk using the function from the hook
         recordChunk({ timestamp, count })
-
-        // Update the last message (assistant's message) by appending the chunk
         setMessages(prev => {
             const lastMessage = prev[prev.length - 1]
             if (lastMessage && lastMessage.role === 'assistant') { 
@@ -60,10 +64,17 @@ export default function App() {
     }
 
     const handleStreamEnd = () => {
-        // The hook automatically stops the interval when chunks stop arriving,
-        // so we may not need to do anything extra here regarding TPS.
-        // If we explicitly wanted to reset display to 0 on end, call resetTpsCalculator()
         console.log("Stream ended.")
+        // Save the record to localStorage
+        const finalTps = tps; // Capture the TPS value at the end of the stream
+        saveTpsRecord({
+            query: currentQueryInputRef.current, // Use the stored input
+            model: model,
+            tps: finalTps,
+            timestamp: new Date().toISOString(), // Add a timestamp
+            ollamaUrl: ollamaUrl // Optionally store the URL used
+        });
+        // Optional: Maybe call resetTpsCalculator() here if you want the display to reset immediately after saving?
     }
 
     const handleError = (error) => {
@@ -72,11 +83,9 @@ export default function App() {
             ...prev.slice(0, -1),
             { role: 'assistant', content: `Error: ${error.message}` }
         ])
-        // Reset TPS calculator on error too
         resetTpsCalculator() 
     }
 
-    // Call the service function
     await streamChatCompletion(
         ollamaUrl, 
         model, 

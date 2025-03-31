@@ -27,7 +27,7 @@ export const useTpsCalculator = (updateIntervalMs = 500, windowDurationMs = 1000
         if (recentChunksRef.current.length === 0) {
             // Remove log
             if (tps !== 0) {
-                setTps(0);
+                setTps(0);  
             }
             // Stop interval if no data points are left in the window
             if (intervalIdRef.current) {
