@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import ReactMarkdown from 'react-markdown'
-import './App.css'
+import './assets/App.css'
+import Header from './components/Layout/Header'
+import ChatMessages from './components/ChatInterface/ChatMessages'
+import MessageInput from './components/ChatInterface/MessageInput'
 
 export default function App() {
   const [messages, setMessages] = useState([{ role: "system", content: "Start chatting with Ollama..." }])
-  const [model, setModel] = useState("phi4")
+  const [model, setModel] = useState("gemma3")
   const [input, setInput] = useState("")
   const [tps, setTps] = useState(0); // State for tokens per second
   const startTimeRef = useRef(null); // Ref for start time
@@ -159,39 +162,19 @@ export default function App() {
 
   return (
     <div className="app-container">
-        {/* Header Section */}
-        <div className="header">
-            <img src="/logo.png" alt="LlamaWire Logo" />
-            <h2>LlamaWire <span className="tps-display">{tps > 0 && `(${tps} tokens/sec)`}</span></h2>
-            <div></div>
-        </div>
+        {/* Use the Header component, passing tps as a prop */}
+        <Header tps={tps} />
 
-        {/* Messages Section */}
-        <div className="messages-container">
-            {messages.map((m, i) => (
-              <div key={i} className={`message ${m.role}`}>
-                  <strong>{m.role}:</strong>
-                  {m.role === 'assistant' ? (
-                      <div className="markdown-content">
-                          <ReactMarkdown>{m.content}</ReactMarkdown>
-                      </div>
-                  ) : (
-                      m.content
-                  )}
-              </div>
-            ))}
-        </div>
+        {/* Use the ChatMessages component, passing messages as a prop */}
+        <ChatMessages messages={messages} />
 
-        {/* Input Section */}
-        <div className="input-area">
-            <input 
-                value={input} 
-                onChange={e => setInput(e.target.value)} 
-                onKeyDown={handleKeyDown}
-                placeholder="Type your message..."
-            />
-            <button onClick={sendMessage}>Send</button>
-        </div>
+        {/* Use the MessageInput component */}
+        <MessageInput 
+            input={input} 
+            setInput={setInput} 
+            handleKeyDown={handleKeyDown} 
+            sendMessage={sendMessage} 
+        />
     </div>
   )
 }

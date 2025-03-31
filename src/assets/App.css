@@ -81,3 +81,22 @@ body {
     background-color: #555;
   }
   
+  /* Role-specific colors */
+  .role-system {
+    color: lightcoral;
+  }
+  
+  .role-user {
+    color: lightblue;
+  }
+  
+  /* Use a pastel green */
+  .role-assistant {
+    color: lightgreen;
+  }
+  
+  /* Ensure strong tag doesn't override span color */
+  .message strong {
+    /* Reset or adjust font-weight if needed */
+  }
+  
