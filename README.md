@@ -93,52 +93,7 @@ If you have Docker installed, you can run LlamaWire directly from the pre-built 
 *   The Ollama API endpoint is currently hardcoded to `http://localhost:11434/api/chat` in `src/App.jsx`.
     *   **Docker Note:** When running LlamaWire in Docker, `localhost` refers to the *container itself*, not your host machine. You need to use the appropriate network address for your Ollama instance (e.g., `http://host.docker.internal:11434` for Docker Desktop, or the host's IP address). An upcoming feature will allow configuring this URL in the UI.
 
-## LlamaWire
-
-A modern, sleek interface for chatting with Ollama models.
-
-### Features
-
-- Clean, intuitive UI with a responsive design
-- Support for all Ollama models
-- Markdown rendering in chat responses
-- Code syntax highlighting and formatting
-- Tokens per second (TPS) measurement
-- Easy configuration with minimal setup
-
-### Docker
-
-#### Running from Docker Hub
-
-```bash
-docker run -p 3000:80 groos12/llama-wire:latest
-```
-
-The Docker image supports both ARM64 (e.g., Apple Silicon M1/M2) and AMD64 architectures automatically.
-
-Then navigate to http://localhost:3000 in your browser.
-
-#### Building locally
-
-```bash
-# Build the Docker image
-docker build -t llama-wire .
-
-# Run the container
-docker run -p 3000:80 llama-wire
-```
-
-### Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-### CI/CD Setup
+## CI/CD Setup
 
 This project uses GitHub Actions to automatically build and push the Docker image to Docker Hub when changes are merged to the main branch.
 
@@ -152,7 +107,7 @@ To set up the CI/CD pipeline:
 
 Once these secrets are set, the workflow will automatically build and push the image to Docker Hub whenever you merge to the main branch.
 
-### Usage with Ollama
+## Usage with Ollama
 
 LlamaWire is designed to work with [Ollama](https://ollama.ai/). Make sure you have Ollama running locally or on a server accessible from your network.
 
