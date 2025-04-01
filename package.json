@@ -8,10 +8,12 @@
         "test": "vitest"
     },
     "dependencies": {
+        "@tailwindcss/vite": "^4.1.0",
         "react": "^18",
         "react-dom": "^18",
         "react-markdown": "^10.1.0",
-        "rehype-starry-night": "^2.2.0"
+        "rehype-starry-night": "^2.2.0",
+        "tailwindcss": "^4.1.0"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.6.3",
