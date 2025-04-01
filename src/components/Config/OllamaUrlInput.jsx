@@ -14,17 +14,16 @@ const OllamaUrlInput = ({ ollamaUrl, setOllamaUrl }) => {
     };
 
     return (
-        <div className="ollama-url-input-container">
-            <label htmlFor="ollama-url">Ollama URL:</label>
+        <div className="space-y-2">
+            <label htmlFor="ollama-url" className="block text-sm text-gray-400">Ollama URL:</label>
             <input 
-                type="text" // Or type="url" for slightly better semantics/mobile keyboards
+                type="text"
                 id="ollama-url"
                 name="ollama-url"
                 value={ollamaUrl} 
                 onChange={handleChange} 
-                placeholder="http://localhost:11434" // Example placeholder
-                // Basic styling example (inline, consider moving to CSS)
-                style={{ marginLeft: '8px', padding: '4px', width: '250px' }} 
+                placeholder="http://localhost:11434"
+                className="w-full px-3 py-2 rounded text-sm bg-gray-700 border border-gray-600 text-gray-200 focus:outline-none focus:border-blue-500"
             />
             {/* You could add validation feedback here later */}
         </div>

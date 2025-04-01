@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/* Add any custom base styles here */
+body {
+  @apply bg-gray-900 text-gray-100;
+}
+
+/* Code block styling */
+pre {
+  @apply rounded-md bg-gray-800 text-gray-100 p-4 my-4 overflow-auto;
+  position: relative;
+}
+
+code {
+  @apply font-mono text-sm;
+}
+
+/* Language tag for code blocks */
+pre.language-javascript:before,
+pre.language-js:before {
+  content: "JavaScript";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-python:before {
+  content: "Python";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-bash:before,
+pre.language-sh:before {
+  content: "Shell";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-css:before {
+  content: "CSS";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-html:before {
+  content: "HTML";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-json:before {
+  content: "JSON";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+pre.language-sql:before {
+  content: "SQL";
+  @apply absolute top-0 right-0 text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded-bl-md;
+}
+
+/* Custom scrollbar for code blocks */
+pre::-webkit-scrollbar {
+  @apply h-2;
+}
+
+pre::-webkit-scrollbar-track {
+  @apply bg-gray-800;
+}
+
+pre::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
+
+/* Styling for the markdown content */
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  @apply text-gray-100 font-semibold;
+}
+
+.prose p {
+  @apply text-gray-200;
+}
+
+.prose a {
+  @apply text-blue-400 hover:underline;
+}
+
+.prose ul {
+  @apply list-disc pl-6 text-gray-200;
+}
+
+.prose ol {
+  @apply list-decimal pl-6 text-gray-200;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-gray-600 pl-4 py-2 my-3 bg-gray-700/30 rounded-r text-gray-300;
+}
+
+/* Inline code */
+:not(pre) > code {
+  @apply bg-gray-700 text-gray-200 px-1 py-0.5 rounded text-sm;
+}
+
+/* You can add any additional custom styles below */ 
