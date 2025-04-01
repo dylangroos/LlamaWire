@@ -16,15 +16,15 @@ const ModelSelector = ({ models = [], selectedModel, setSelectedModel, isLoading
     };
 
     return (
-        <div className="model-selector-container">
-            <label htmlFor="model-select">Model:</label>
+        <div className="space-y-2">
+            <label htmlFor="model-select" className="block text-sm text-gray-400">Model:</label>
             <select 
                 id="model-select"
                 name="model-select"
                 value={selectedModel}
                 onChange={handleChange}
                 disabled={isLoading || error}
-                style={{ marginLeft: '8px', padding: '4px', minWidth: '150px' }} 
+                className="w-full px-3 py-2 rounded text-sm bg-gray-700 border border-gray-600 text-gray-200 focus:outline-none focus:border-blue-500 disabled:opacity-60"
             >
                 {isLoading && <option value="" disabled>Loading models...</option>}
                 {error && <option value="" disabled>Error loading models</option>}
@@ -35,8 +35,7 @@ const ModelSelector = ({ models = [], selectedModel, setSelectedModel, isLoading
                     </option>
                 ))}
             </select>
-            {/* Optionally display the error message */}
-            {/* {error && <span style={{ color: 'red', marginLeft: '10px' }}>{error}</span>} */}
+            {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
         </div>
     );
 };
