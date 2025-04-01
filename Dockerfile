@@ -14,7 +14,7 @@ COPY public/logo.png ./public/
 COPY public/dark-logo.png ./public/
 
 COPY src/ ./src/
-COPY vite.config.js ./
+COPY vite.config.mjs ./
 # Add any other necessary config files
 
 # Copy index.html from the source root to the build context root (/app)
