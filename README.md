@@ -114,6 +114,8 @@ A modern, sleek interface for chatting with Ollama models.
 docker run -p 3000:80 groos12/llama-wire:latest
 ```
 
+The Docker image supports both ARM64 (e.g., Apple Silicon M1/M2) and AMD64 architectures automatically.
+
 Then navigate to http://localhost:3000 in your browser.
 
 #### Building locally
